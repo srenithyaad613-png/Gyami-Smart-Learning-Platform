@@ -1,0 +1,728 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Assistant | Gyami</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .ai-hero {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .ai-hero::after {
+            content: "AI";
+            position: absolute;
+            right: 6%;
+            top: -25px;
+            font-size: 150px;
+            font-weight: 900;
+            letter-spacing: -8px;
+            color: rgba(77, 163, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .ai-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .ai-main {
+            min-width: 0;
+        }
+
+        .assistant-card {
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .assistant-header {
+            padding: 20px 22px;
+            border-bottom: 1px solid rgba(91, 151, 255, 0.14);
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(77, 163, 255, 0.08),
+                    rgba(255, 157, 61, 0.045)
+                );
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .assistant-title {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(77, 163, 255, 0.2),
+                    rgba(255, 157, 61, 0.14)
+                );
+            border: 1px solid rgba(77, 163, 255, 0.3);
+            box-shadow: 0 0 25px rgba(77, 163, 255, 0.1);
+        }
+
+        .assistant-title h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .assistant-title span {
+            display: block;
+            color: var(--success);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: var(--success);
+            box-shadow: 0 0 12px rgba(84, 227, 155, 0.6);
+            margin-right: 5px;
+        }
+
+        .chat-area {
+            min-height: 450px;
+            max-height: 560px;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background:
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(77, 163, 255, 0.045),
+                    transparent 30%
+                );
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 85%;
+        }
+
+        .message.user {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            background: rgba(77, 163, 255, 0.08);
+        }
+
+        .message.user .message-avatar {
+            background: rgba(255, 157, 61, 0.08);
+            border-color: rgba(255, 157, 61, 0.2);
+        }
+
+        .message-bubble {
+            padding: 12px 15px;
+            border-radius: 15px;
+            background: rgba(18, 30, 62, 0.72);
+            border: 1px solid rgba(91, 151, 255, 0.13);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .message.user .message-bubble {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(77, 163, 255, 0.14),
+                    rgba(255, 157, 61, 0.08)
+                );
+            border-color: rgba(77, 163, 255, 0.22);
+        }
+
+        .message-bubble strong {
+            color: var(--blue2);
+        }
+
+        .chat-input-area {
+            padding: 17px;
+            border-top: 1px solid rgba(91, 151, 255, 0.14);
+            background: rgba(5, 8, 22, 0.4);
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-width: 0;
+            padding: 13px 15px;
+            border-radius: 13px;
+            border: 1px solid var(--border);
+            background: rgba(5, 8, 22, 0.72);
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .chat-input:focus {
+            border-color: rgba(77, 163, 255, 0.6);
+            box-shadow: 0 0 22px rgba(77, 163, 255, 0.1);
+        }
+
+        .chat-input::placeholder {
+            color: #71809d;
+        }
+
+        .send-btn {
+            min-width: 95px;
+            justify-content: center;
+        }
+
+        .suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 11px;
+        }
+
+        .suggestion {
+            border: 1px solid rgba(91, 151, 255, 0.16);
+            background: rgba(77, 163, 255, 0.045);
+            color: var(--muted);
+            border-radius: 10px;
+            padding: 7px 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: 0.2s ease;
+        }
+
+        .suggestion:hover {
+            color: var(--text);
+            border-color: rgba(77, 163, 255, 0.4);
+            background: rgba(77, 163, 255, 0.09);
+        }
+
+        .side-panel {
+            display: grid;
+            gap: 18px;
+        }
+
+        .ai-feature {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(91, 151, 255, 0.1);
+        }
+
+        .ai-feature:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            background: rgba(77, 163, 255, 0.08);
+            border: 1px solid rgba(77, 163, 255, 0.15);
+        }
+
+        .ai-feature strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .ai-feature p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .ai-notice {
+            border: 1px solid rgba(255, 157, 61, 0.18);
+            background: rgba(255, 157, 61, 0.05);
+        }
+
+        .ai-notice strong {
+            color: var(--orange2);
+        }
+
+        .ai-notice p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .typing {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            padding-left: 45px;
+        }
+
+        .typing span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--blue);
+            animation: pulse 1s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes pulse {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            30% {
+                opacity: 1;
+                transform: translateY(-3px);
+            }
+        }
+
+        @media (max-width: 850px) {
+            .ai-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-area {
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .message {
+                max-width: 94%;
+            }
+
+            .chat-form {
+                flex-direction: column;
+            }
+
+            .send-btn {
+                width: 100%;
+            }
+
+            .assistant-header {
+                padding: 16px;
+            }
+
+            .chat-area {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="container navin">
+        <a href="/dashboard.html" class="brand">
+            <span class="logo">G</span>
+            <span>Gyami</span>
+        </a>
+
+        <nav>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/courses.html">Courses</a>
+            <a href="/books.html">Books</a>
+            <a href="/notes.html">Notes</a>
+            <a href="/focus.html">Focus</a>
+            <a href="/quiz.html">Quiz</a>
+            <a href="/ai.html" class="active">AI</a>
+            <a href="/progress.html">Progress</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero ai-hero">
+        <div class="ai-hero-content">
+            <span class="badge">✦ GYAMI AI</span>
+            <h1>Your Smart Study Companion</h1>
+            <p>
+                Ask questions, get study guidance, understand concepts,
+                and make your learning sessions more productive.
+            </p>
+        </div>
+    </section>
+
+    <section class="ai-layout">
+
+        <div class="card assistant-card">
+
+            <div class="assistant-header">
+
+                <div class="assistant-title">
+                    <div class="ai-avatar">🤖</div>
+
+                    <div>
+                        <h2>Gyami AI Assistant</h2>
+                        <span>
+                            <i class="online-dot"></i>
+                            Ready to help
+                        </span>
+                    </div>
+                </div>
+
+                <span class="badge">STUDY MODE</span>
+
+            </div>
+
+            <div id="chatArea" class="chat-area">
+
+                <div class="message">
+
+                    <div class="message-avatar">🤖</div>
+
+                    <div class="message-bubble">
+                        <strong>Hi! I'm Gyami AI.</strong><br>
+                        I can help you understand concepts,
+                        revise topics, plan your study session,
+                        or answer questions about your courses.
+                        🚀
+                    </div>
+
+                </div>
+
+                <div class="message">
+
+                    <div class="message-avatar">💡</div>
+
+                    <div class="message-bubble">
+                        Try asking something like
+                        <strong>"Explain Python lists"</strong>
+                        or
+                        <strong>"How should I prepare for my exam?"</strong>
+                    </div>
+
+                </div>
+
+                <div id="typing" class="typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Thinking...
+                </div>
+
+            </div>
+
+            <div class="chat-input-area">
+
+                <form id="chatForm" class="chat-form">
+
+                    <input
+                        id="chatInput"
+                        class="chat-input"
+                        type="text"
+                        placeholder="Ask Gyami AI something..."
+                        autocomplete="off"
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        class="primary-btn send-btn"
+                    >
+                        Send ✦
+                    </button>
+
+                </form>
+
+                <div class="suggestions">
+
+                    <button
+                        type="button"
+                        class="suggestion"
+                        data-question="Explain Python lists simply"
+                    >
+                        🐍 Python lists
+                    </button>
+
+                    <button
+                        type="button"
+                        class="suggestion"
+                        data-question="Explain databases simply"
+                    >
+                        🗄️ Databases
+                    </button>
+
+                    <button
+                        type="button"
+                        class="suggestion"
+                        data-question="Give me a study plan"
+                    >
+                        📚 Study plan
+                    </button>
+
+                    <button
+                        type="button"
+                        class="suggestion"
+                        data-question="Help me prepare for an exam"
+                    >
+                        🎯 Exam prep
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <aside class="side-panel">
+
+            <div class="card">
+
+                <h3>AI Learning Tools</h3>
+
+                <div class="ai-feature">
+                    <div class="feature-icon">🧠</div>
+                    <div>
+                        <strong>Concept Help</strong>
+                        <p>Break difficult topics into simpler ideas.</p>
+                    </div>
+                </div>
+
+                <div class="ai-feature">
+                    <div class="feature-icon">📖</div>
+                    <div>
+                        <strong>Study Support</strong>
+                        <p>Get useful guidance for your learning sessions.</p>
+                    </div>
+                </div>
+
+                <div class="ai-feature">
+                    <div class="feature-icon">⚡</div>
+                    <div>
+                        <strong>Quick Answers</strong>
+                        <p>Get concise explanations when you are stuck.</p>
+                    </div>
+                </div>
+
+                <div class="ai-feature">
+                    <div class="feature-icon">🎯</div>
+                    <div>
+                        <strong>Exam Preparation</strong>
+                        <p>Use focused prompts for revision and practice.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card ai-notice">
+
+                <strong>💡 Smart Learning Tip</strong>
+
+                <p>
+                    Instead of asking only for an answer, ask the AI
+                    to explain the concept with an example. That helps
+                    turn information into understanding.
+                </p>
+
+            </div>
+
+        </aside>
+
+    </section>
+
+</main>
+
+<script>
+    const user = JSON.parse(
+        localStorage.getItem("gyamiUser") || "null"
+    );
+
+    if (!user) {
+        window.location.href = "/index.html";
+    }
+
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+    const chatArea = document.getElementById("chatArea");
+    const typing = document.getElementById("typing");
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function addMessage(text, type = "ai") {
+
+        const message = document.createElement("div");
+
+        message.className =
+            `message ${type === "user" ? "user" : ""}`;
+
+        const avatar =
+            type === "user" ? "👤" : "🤖";
+
+        message.innerHTML = `
+            <div class="message-avatar">
+                ${avatar}
+            </div>
+
+            <div class="message-bubble">
+                ${escapeHtml(text).replace(/\n/g, "<br>")}
+            </div>
+        `;
+
+        chatArea.insertBefore(message, typing);
+
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function showTyping(show) {
+        typing.style.display =
+            show ? "flex" : "none";
+
+        chatArea.scrollTop =
+            chatArea.scrollHeight;
+    }
+
+    async function askAI(question) {
+
+        if (!question.trim()) return;
+
+        addMessage(question, "user");
+
+        chatInput.value = "";
+        chatInput.disabled = true;
+
+        showTyping(true);
+
+        try {
+
+            const response = await fetch("/api/ai", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    message: question
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail ||
+                    data.message ||
+                    "AI request failed"
+                );
+            }
+
+            const reply =
+                data.response ||
+                data.reply ||
+                data.message ||
+                "I couldn't generate a response right now.";
+
+            showTyping(false);
+
+            addMessage(reply, "ai");
+
+        } catch (error) {
+
+            console.error(error);
+
+            showTyping(false);
+
+            addMessage(
+                "I couldn't connect to the study assistant right now. Please make sure the Gyami server is running and try again.",
+                "ai"
+            );
+
+        } finally {
+
+            chatInput.disabled = false;
+            chatInput.focus();
+
+        }
+    }
+
+    chatForm.addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        askAI(chatInput.value);
+
+    });
+
+    document
+        .querySelectorAll(".suggestion")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const question =
+                    button.dataset.question;
+
+                chatInput.value = question;
+                chatInput.focus();
+
+            });
+
+        });
+</script>
+
+</body>
+</html>
+```

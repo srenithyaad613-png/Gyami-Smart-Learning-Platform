@@ -1,0 +1,439 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyami | Courses</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .courses-hero {
+            margin-bottom: 30px;
+        }
+
+        .course-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card::before {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            right: -70px;
+            top: -70px;
+            border-radius: 50%;
+            background: rgba(77,163,255,.08);
+            filter: blur(15px);
+        }
+
+        .course-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .course-icon {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: linear-gradient(
+                135deg,
+                rgba(77,163,255,.18),
+                rgba(255,157,61,.14)
+            );
+            border: 1px solid rgba(77,163,255,.22);
+            font-size: 1.7rem;
+            box-shadow: 0 0 25px rgba(77,163,255,.1);
+        }
+
+        .course-description {
+            min-height: 52px;
+            margin: 12px 0 15px;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .progress-label {
+            color: var(--muted);
+            font-size: .86rem;
+        }
+
+        .open-course {
+            color: var(--blue2);
+            font-weight: 700;
+        }
+
+        .open-course:hover {
+            color: var(--orange2);
+        }
+
+        .category-section {
+            margin-bottom: 35px;
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .category-line {
+            height: 1px;
+            flex: 1;
+            background: linear-gradient(
+                90deg,
+                rgba(77,163,255,.25),
+                transparent
+            );
+        }
+
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            border: 1px dashed rgba(91,151,255,.25);
+            border-radius: 20px;
+            background: rgba(8,16,36,.5);
+        }
+
+        @media (max-width: 600px) {
+            .course-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <a href="/dashboard.html" class="brand">
+        <span class="logo">G</span>
+        <span>Gyami<span style="color:var(--orange)">✦</span></span>
+    </a>
+
+    <nav>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/courses.html" class="active">Courses</a>
+        <a href="/books.html">Books</a>
+        <a href="/notes.html">Notes</a>
+        <a href="/focus.html">Focus</a>
+        <a href="/quiz.html">Quiz</a>
+        <a href="/ai.html">AI</a>
+        <a href="/progress.html">Progress</a>
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <!-- HERO -->
+
+    <section class="hero courses-hero">
+
+        <div>
+            <div class="eyebrow">GYAMI LEARNING LIBRARY</div>
+
+            <h1>Explore Your Courses 📚</h1>
+
+            <p>
+                Build your skills step by step with structured,
+                beginner-friendly learning paths.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- COURSE CONTENT -->
+
+    <section>
+
+        <div class="section-header">
+
+            <div>
+                <div class="eyebrow">YOUR CURRICULUM</div>
+                <h2>Available Courses</h2>
+                <p>Choose a course and continue building your knowledge.</p>
+            </div>
+
+        </div>
+
+        <div id="courseSections">
+
+            <div class="empty-state">
+                Loading your courses...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer style="
+    text-align:center;
+    padding:25px;
+    color:var(--muted);
+    border-top:1px solid rgba(91,151,255,.1);
+">
+    Gyami Smart Learning Platform
+    <span style="color:var(--orange)">✦</span>
+    Learn smarter, one step at a time.
+</footer>
+
+
+<script>
+
+const user = JSON.parse(
+    localStorage.getItem("gyamiUser") || "null"
+);
+
+if (!user) {
+    window.location.href = "/index.html";
+}
+
+
+function getCourseIcon(category, title) {
+
+    const text =
+        ((category || "") + " " + (title || "")).toLowerCase();
+
+    if (text.includes("python")) return "🐍";
+    if (text.includes("web")) return "🌐";
+    if (text.includes("database")) return "🗄️";
+    if (text.includes("artificial") || text.includes("ai")) return "🤖";
+    if (text.includes("environment")) return "🌱";
+
+    return "📘";
+}
+
+
+async function loadCourses() {
+
+    const container =
+        document.getElementById("courseSections");
+
+    try {
+
+        const response =
+            await fetch("/api/progress/" + user.id);
+
+        const data =
+            await response.json();
+
+        const courses =
+            data.courses || [];
+
+
+        if (courses.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size:3rem;margin-bottom:15px;">
+                        📚
+                    </div>
+
+                    <h3>No courses available</h3>
+
+                    <p>
+                        Courses will appear here once they are added
+                        to your Gyami learning platform.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        /* GROUP COURSES BY CATEGORY */
+
+        const grouped = {};
+
+        courses.forEach(function(course) {
+
+            const category =
+                course.category || "General";
+
+            if (!grouped[category]) {
+                grouped[category] = [];
+            }
+
+            grouped[category].push(course);
+
+        });
+
+
+        container.innerHTML =
+            Object.keys(grouped).map(function(category) {
+
+                return `
+
+                    <section class="category-section">
+
+                        <div class="category-title">
+
+                            <span class="badge">
+                                ${escapeHtml(category)}
+                            </span>
+
+                            <div class="category-line"></div>
+
+                        </div>
+
+                        <div class="course-grid">
+
+                            ${grouped[category].map(function(course) {
+
+                                const progress =
+                                    Number(course.progress || 0);
+
+                                const icon =
+                                    getCourseIcon(
+                                        course.category,
+                                        course.title
+                                    );
+
+                                return `
+
+                                    <article class="course-card">
+
+                                        <div class="course-heading">
+
+                                            <div>
+
+                                                <span class="badge">
+                                                    ${escapeHtml(course.category || "Course")}
+                                                </span>
+
+                                                <h3 style="margin-top:12px;">
+                                                    ${escapeHtml(course.title)}
+                                                </h3>
+
+                                            </div>
+
+                                            <div class="course-icon">
+                                                ${icon}
+                                            </div>
+
+                                        </div>
+
+
+                                        <p class="course-description">
+
+                                            ${escapeHtml(
+                                                course.description ||
+                                                "Continue learning and strengthen your skills."
+                                            )}
+
+                                        </p>
+
+
+                                        <div class="progress-bar">
+
+                                            <div
+                                                class="progress-fill"
+                                                style="width:${progress}%">
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="course-footer">
+
+                                            <span class="progress-label">
+                                                ${progress}% complete
+                                            </span>
+
+                                            <a
+                                                href="/courses.html"
+                                                class="open-course">
+                                                Continue →
+                                            </a>
+
+                                        </div>
+
+                                    </article>
+
+                                `;
+
+                            }).join("")}
+
+                        </div>
+
+                    </section>
+
+                `;
+
+            }).join("");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div style="font-size:2.5rem;">
+                    ⚠️
+                </div>
+
+                <h3>Unable to load courses</h3>
+
+                <p>
+                    Please make sure the Gyami server is running
+                    and refresh this page.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+function escapeHtml(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+loadCourses();
+
+</script>
+
+</body>
+</html>
+```

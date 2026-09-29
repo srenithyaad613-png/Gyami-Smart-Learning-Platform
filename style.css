@@ -1,0 +1,606 @@
+/* =========================================================
+   GYAMI SMART LEARNING
+   DARK FUTURISTIC DESIGN SYSTEM
+   ========================================================= */
+
+:root {
+    --bg: #050816;
+    --bg2: #091126;
+    --panel: rgba(13, 22, 48, 0.82);
+    --panel2: rgba(18, 30, 62, 0.9);
+    --border: rgba(91, 151, 255, 0.22);
+    --blue: #4da3ff;
+    --blue2: #76c7ff;
+    --orange: #ff9d3d;
+    --orange2: #ffd166;
+    --text: #f3f7ff;
+    --muted: #9eacc8;
+    --success: #54e39b;
+    --danger: #ff6b81;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 10% 10%, rgba(55, 128, 255, 0.16), transparent 28%),
+        radial-gradient(circle at 90% 15%, rgba(255, 157, 61, 0.11), transparent 25%),
+        radial-gradient(circle at 50% 100%, rgba(66, 100, 255, 0.12), transparent 32%),
+        linear-gradient(135deg, #030510, #071025 50%, #050816);
+    line-height: 1.6;
+}
+
+/* subtle futuristic grid */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    background-image:
+        linear-gradient(rgba(77, 163, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(77, 163, 255, 0.035) 1px, transparent 1px);
+    background-size: 45px 45px;
+    z-index: -1;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 12px 5%;
+    background: rgba(4, 8, 22, 0.88);
+    border-bottom: 1px solid rgba(77, 163, 255, 0.16);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.28);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.logo,
+.logo.tiny {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(135deg, #2387ff, #6f5cff);
+    box-shadow:
+        0 0 22px rgba(77, 163, 255, 0.4),
+        inset 0 0 15px rgba(255, 255, 255, 0.12);
+    font-weight: 900;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 1;
+}
+
+nav a {
+    padding: 9px 13px;
+    color: #aab7d2;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    transition: 0.25s ease;
+}
+
+nav a:hover {
+    color: white;
+    background: rgba(77, 163, 255, 0.1);
+}
+
+nav a.active {
+    color: white;
+    background: linear-gradient(
+        135deg,
+        rgba(77, 163, 255, 0.18),
+        rgba(120, 85, 255, 0.16)
+    );
+    box-shadow: inset 0 0 0 1px rgba(77, 163, 255, 0.15);
+}
+
+.logout {
+    border: 1px solid rgba(255, 107, 129, 0.3);
+    background: rgba(255, 107, 129, 0.08);
+    color: #ffb2bf;
+    padding: 9px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.logout:hover {
+    background: rgba(255, 107, 129, 0.16);
+}
+
+/* =========================================================
+   GENERAL LAYOUT
+   ========================================================= */
+
+.container {
+    width: min(1180px, 90%);
+    margin: 0 auto;
+    padding: 48px 0 70px;
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    min-height: 260px;
+    padding: 45px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255, 157, 61, 0.14), transparent 30%),
+        radial-gradient(circle at 20% 80%, rgba(77, 163, 255, 0.14), transparent 34%),
+        rgba(10, 18, 42, 0.82);
+    box-shadow: var(--shadow);
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    right: -90px;
+    bottom: -110px;
+    border-radius: 50%;
+    background: rgba(77, 163, 255, 0.14);
+    filter: blur(35px);
+}
+
+.eyebrow {
+    margin-bottom: 10px;
+    color: var(--orange);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.12;
+    margin-bottom: 12px;
+}
+
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+}
+
+h3 {
+    font-size: 1.15rem;
+    margin-bottom: 7px;
+}
+
+p {
+    color: var(--muted);
+}
+
+.center {
+    text-align: center;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.small {
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.primary-btn,
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    color: white;
+    font-weight: 750;
+    cursor: pointer;
+    background: linear-gradient(135deg, #2387ff, #6a61ff);
+    box-shadow: 0 10px 30px rgba(49, 123, 255, 0.24);
+    transition: 0.25s ease;
+}
+
+.primary-btn:hover,
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(49, 123, 255, 0.35);
+}
+
+.link-btn {
+    white-space: nowrap;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.stat {
+    padding: 23px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+}
+
+.stat b {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--blue2);
+    font-size: 1.8rem;
+}
+
+.stat span {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+/* =========================================================
+   CARDS / GRIDS
+   ========================================================= */
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.feature-card,
+.card,
+.course-card,
+.book-card,
+.note-card,
+.activity-card {
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17, 29, 62, 0.9),
+            rgba(8, 16, 36, 0.92)
+        );
+    box-shadow: var(--shadow);
+}
+
+.feature-card {
+    display: block;
+    padding: 27px;
+    transition: 0.3s ease;
+}
+
+.feature-card:hover,
+.course-card:hover,
+.book-card:hover,
+.note-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(77, 163, 255, 0.48);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.42),
+        0 0 30px rgba(77, 163, 255, 0.08);
+}
+
+.feature-card > span {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 2.2rem;
+}
+
+/* =========================================================
+   COURSE / BOOK / NOTE PAGES
+   ========================================================= */
+
+.course-grid,
+.books-grid,
+.notes-grid,
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.course-card,
+.book-card,
+.note-card {
+    padding: 25px;
+}
+
+.course-card h3,
+.book-card h3,
+.note-card h3 {
+    color: white;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 9px;
+    overflow: hidden;
+    margin: 12px 0;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--blue), var(--orange));
+    box-shadow: 0 0 14px rgba(77, 163, 255, 0.35);
+}
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.auth {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.authbox {
+    width: min(460px, 100%);
+    padding: 40px;
+    background:
+        radial-gradient(circle at 90% 5%, rgba(255, 157, 61, 0.1), transparent 28%),
+        rgba(10, 18, 42, 0.9);
+}
+
+.authbox .logo {
+    margin-bottom: 22px;
+}
+
+.form {
+    display: grid;
+    gap: 14px;
+    margin-top: 25px;
+}
+
+.input,
+textarea,
+select {
+    width: 100%;
+    padding: 13px 15px;
+    color: white;
+    border: 1px solid rgba(91, 151, 255, 0.2);
+    outline: none;
+    border-radius: 12px;
+    background: rgba(4, 9, 23, 0.75);
+    transition: 0.2s ease;
+}
+
+.input::placeholder,
+textarea::placeholder {
+    color: #65728e;
+}
+
+.input:focus,
+textarea:focus,
+select:focus {
+    border-color: rgba(77, 163, 255, 0.7);
+    box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.1);
+}
+
+/* =========================================================
+   SECTION HEADERS
+   ========================================================= */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.section-header p {
+    margin-top: 4px;
+}
+
+/* =========================================================
+   FOCUS / QUIZ / AI
+   ========================================================= */
+
+.focus-card,
+.quiz-card,
+.ai-card {
+    padding: 32px;
+    margin-bottom: 22px;
+}
+
+.timer {
+    margin: 25px 0;
+    text-align: center;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 850;
+    color: var(--blue2);
+    text-shadow: 0 0 30px rgba(77, 163, 255, 0.35);
+}
+
+.ai-message {
+    padding: 16px;
+    margin-top: 15px;
+    border-left: 3px solid var(--orange);
+    border-radius: 10px;
+    background: rgba(255, 157, 61, 0.06);
+}
+
+/* =========================================================
+   TABLES / LISTS
+   ========================================================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 15px;
+}
+
+th,
+td {
+    padding: 13px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(91, 151, 255, 0.1);
+}
+
+th {
+    color: var(--blue2);
+    background: rgba(77, 163, 255, 0.07);
+}
+
+td {
+    color: #c5d0e5;
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    color: var(--blue2);
+    background: rgba(77, 163, 255, 0.1);
+    border: 1px solid rgba(77, 163, 255, 0.16);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .topbar {
+        flex-wrap: wrap;
+    }
+
+    nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+    }
+
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .course-grid,
+    .books-grid,
+    .notes-grid,
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .container {
+        width: 92%;
+        padding-top: 30px;
+    }
+
+    .hero {
+        padding: 28px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .auth {
+        padding: 18px;
+    }
+
+    .authbox {
+        padding: 28px 22px;
+    }
+
+    .topbar {
+        padding: 10px 4%;
+    }
+
+    .logout {
+        margin-left: auto;
+    }
+}

@@ -1,0 +1,651 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus | Gyami Smart Learning</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .focus-hero {
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .focus-hero::after {
+            content: "◉";
+            position: absolute;
+            right: 7%;
+            top: -35px;
+            font-size: 170px;
+            color: rgba(77, 163, 255, 0.06);
+        }
+
+        .focus-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .timer-card {
+            text-align: center;
+            padding: 42px 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-card::before {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(77, 163, 255, 0.08);
+            box-shadow:
+                0 0 80px rgba(77, 163, 255, 0.08),
+                inset 0 0 50px rgba(255, 157, 61, 0.03);
+            pointer-events: none;
+        }
+
+        .timer-label {
+            color: var(--muted);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timer {
+            margin: 18px auto 24px;
+            font-size: clamp(58px, 10vw, 100px);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 3px;
+            color: var(--text);
+            text-shadow:
+                0 0 24px rgba(77, 163, 255, 0.3),
+                0 0 50px rgba(255, 157, 61, 0.08);
+            position: relative;
+            z-index: 1;
+        }
+
+        .timer-mode {
+            color: var(--orange2);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timer-controls .btn,
+        .timer-controls .primary-btn {
+            min-width: 110px;
+            justify-content: center;
+        }
+
+        .duration-row {
+            margin: 26px auto 0;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .duration-btn {
+            border: 1px solid var(--border);
+            background: rgba(5, 8, 22, 0.55);
+            color: var(--muted);
+            padding: 8px 13px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s ease;
+            font-family: inherit;
+        }
+
+        .duration-btn:hover,
+        .duration-btn.active {
+            color: var(--text);
+            border-color: rgba(77, 163, 255, 0.5);
+            background: rgba(77, 163, 255, 0.1);
+            box-shadow: 0 0 18px rgba(77, 163, 255, 0.08);
+        }
+
+        .session-card h2 {
+            margin-bottom: 7px;
+        }
+
+        .session-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .session-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 14px;
+            border-radius: 13px;
+            border: 1px solid rgba(91, 151, 255, 0.13);
+            background: rgba(5, 8, 22, 0.42);
+        }
+
+        .session-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: rgba(77, 163, 255, 0.1);
+            border: 1px solid rgba(77, 163, 255, 0.16);
+            flex-shrink: 0;
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-info strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .session-info span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .session-minutes {
+            color: var(--orange2);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .focus-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .focus-stat {
+            padding: 17px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            background: rgba(5, 8, 22, 0.45);
+            text-align: center;
+        }
+
+        .focus-stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .focus-stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .focus-tip {
+            margin-top: 24px;
+            padding: 17px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 157, 61, 0.18);
+            background: rgba(255, 157, 61, 0.055);
+        }
+
+        .focus-tip strong {
+            color: var(--orange2);
+        }
+
+        .focus-tip p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .focus-message {
+            min-height: 20px;
+            margin-top: 16px;
+            color: var(--success);
+            font-size: 13px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .empty-sessions {
+            color: var(--muted);
+            font-size: 13px;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 850px) {
+            .focus-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .focus-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .timer-card {
+                padding: 32px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="container navin">
+        <a href="/dashboard.html" class="brand">
+            <span class="logo">G</span>
+            <span>Gyami</span>
+        </a>
+
+        <nav>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/courses.html">Courses</a>
+            <a href="/books.html">Books</a>
+            <a href="/notes.html">Notes</a>
+            <a href="/focus.html" class="active">Focus</a>
+            <a href="/quiz.html">Quiz</a>
+            <a href="/ai.html">AI</a>
+            <a href="/progress.html">Progress</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero focus-hero">
+        <span class="badge">◉ DEEP WORK MODE</span>
+        <h1>Focus Zone</h1>
+        <p>
+            Put distractions aside, choose your study duration,
+            and give one task your full attention.
+        </p>
+    </section>
+
+    <section class="focus-layout">
+
+        <!-- TIMER -->
+        <div class="card timer-card">
+
+            <div class="timer-label">Current focus session</div>
+
+            <div id="timer" class="timer">25:00</div>
+
+            <div id="timerMode" class="timer-mode">
+                Ready to focus
+            </div>
+
+            <div class="timer-controls">
+
+                <button id="startBtn" class="primary-btn">
+                    ▶ Start
+                </button>
+
+                <button id="pauseBtn" class="btn">
+                    ❚❚ Pause
+                </button>
+
+                <button id="resetBtn" class="btn">
+                    ↻ Reset
+                </button>
+
+            </div>
+
+            <div class="duration-row">
+                <button class="duration-btn active" data-minutes="25">
+                    25 min
+                </button>
+
+                <button class="duration-btn" data-minutes="45">
+                    45 min
+                </button>
+
+                <button class="duration-btn" data-minutes="60">
+                    60 min
+                </button>
+            </div>
+
+            <div id="focusMessage" class="focus-message"></div>
+
+        </div>
+
+        <!-- SESSION INFO -->
+        <div class="card session-card">
+
+            <h2>Today's Focus</h2>
+
+            <p class="section-subtitle">
+                Your saved focus sessions appear here.
+            </p>
+
+            <div class="focus-stats">
+                <div class="focus-stat">
+                    <div id="todayMinutes" class="focus-stat-value">0</div>
+                    <div class="focus-stat-label">Minutes</div>
+                </div>
+
+                <div class="focus-stat">
+                    <div id="sessionCount" class="focus-stat-value">0</div>
+                    <div class="focus-stat-label">Sessions</div>
+                </div>
+
+                <div class="focus-stat">
+                    <div id="totalMinutes" class="focus-stat-value">0</div>
+                    <div class="focus-stat-label">Total Minutes</div>
+                </div>
+            </div>
+
+            <div class="focus-tip">
+                <strong>💡 Focus tip</strong>
+                <p>
+                    Choose one small goal before starting.
+                    A clear target makes it easier to stay focused.
+                </p>
+            </div>
+
+            <div id="sessionList" class="session-list">
+                <div class="empty-sessions">
+                    Loading sessions...
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    const user = JSON.parse(localStorage.getItem("gyamiUser") || "null");
+
+    if (!user) {
+        window.location.href = "/index.html";
+    }
+
+    let selectedMinutes = 25;
+    let remainingSeconds = selectedMinutes * 60;
+    let timerInterval = null;
+    let isRunning = false;
+
+    const timer = document.getElementById("timer");
+    const timerMode = document.getElementById("timerMode");
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const focusMessage = document.getElementById("focusMessage");
+
+    function updateTimer() {
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+
+        timer.textContent =
+            `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    function startTimer() {
+        if (isRunning) return;
+
+        if (remainingSeconds <= 0) {
+            remainingSeconds = selectedMinutes * 60;
+            updateTimer();
+        }
+
+        isRunning = true;
+        timerMode.textContent = "Focus session in progress";
+        startBtn.textContent = "● Running";
+
+        timerInterval = setInterval(() => {
+
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateTimer();
+            }
+
+            if (remainingSeconds <= 0) {
+                completeSession();
+            }
+
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        if (!isRunning) return;
+
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isRunning = false;
+
+        timerMode.textContent = "Session paused";
+        startBtn.textContent = "▶ Resume";
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+
+        isRunning = false;
+        remainingSeconds = selectedMinutes * 60;
+
+        updateTimer();
+
+        timerMode.textContent = "Ready to focus";
+        startBtn.textContent = "▶ Start";
+        focusMessage.textContent = "";
+    }
+
+    async function completeSession() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isRunning = false;
+
+        remainingSeconds = 0;
+        updateTimer();
+
+        timerMode.textContent = "🎉 Focus session complete!";
+        startBtn.textContent = "▶ Start";
+
+        focusMessage.textContent =
+            `${selectedMinutes} minutes added to your focus history.`;
+
+        await saveSession(selectedMinutes);
+        await loadSessions();
+    }
+
+    async function saveSession(minutes) {
+        try {
+            const response = await fetch("/api/focus", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    minutes: minutes
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Could not save focus session");
+            }
+
+        } catch (error) {
+            console.error(error);
+
+            focusMessage.textContent =
+                "Session finished, but it could not be saved.";
+            focusMessage.style.color = "var(--danger)";
+        }
+    }
+
+    document.querySelectorAll(".duration-btn").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            if (isRunning) return;
+
+            document
+                .querySelectorAll(".duration-btn")
+                .forEach(btn => btn.classList.remove("active"));
+
+            button.classList.add("active");
+
+            selectedMinutes = Number(button.dataset.minutes);
+            remainingSeconds = selectedMinutes * 60;
+
+            updateTimer();
+
+            timerMode.textContent = "Ready to focus";
+            startBtn.textContent = "▶ Start";
+            focusMessage.textContent = "";
+        });
+
+    });
+
+    startBtn.addEventListener("click", startTimer);
+    pauseBtn.addEventListener("click", pauseTimer);
+    resetBtn.addEventListener("click", resetTimer);
+
+    async function loadSessions() {
+
+        const sessionList = document.getElementById("sessionList");
+
+        try {
+            const response = await fetch(`/api/focus/${user.id}`);
+            const data = await response.json();
+
+            const sessions = Array.isArray(data)
+                ? data
+                : (data.sessions || []);
+
+            const today = new Date().toDateString();
+
+            let todayMinutes = 0;
+
+            sessions.forEach(session => {
+                const sessionDate = session.created_at || session.created;
+
+                if (sessionDate) {
+                    const date = new Date(sessionDate);
+
+                    if (!Number.isNaN(date.getTime()) &&
+                        date.toDateString() === today) {
+                        todayMinutes += Number(session.minutes || 0);
+                    }
+                }
+            });
+
+            const totalMinutes = sessions.reduce(
+                (total, session) =>
+                    total + Number(session.minutes || 0),
+                0
+            );
+
+            document.getElementById("todayMinutes").textContent =
+                todayMinutes;
+
+            document.getElementById("sessionCount").textContent =
+                sessions.length;
+
+            document.getElementById("totalMinutes").textContent =
+                totalMinutes;
+
+            if (!sessions.length) {
+                sessionList.innerHTML = `
+                    <div class="empty-sessions">
+                        No focus sessions yet. Start your first one! 🚀
+                    </div>
+                `;
+                return;
+            }
+
+            const recentSessions = sessions.slice(0, 5);
+
+            sessionList.innerHTML = recentSessions.map(session => {
+
+                const dateValue =
+                    session.created_at || session.created;
+
+                let dateText = "Recently";
+
+                if (dateValue) {
+                    const date = new Date(dateValue);
+
+                    if (!Number.isNaN(date.getTime())) {
+                        dateText = date.toLocaleDateString([], {
+                            day: "numeric",
+                            month: "short"
+                        });
+                    }
+                }
+
+                return `
+                    <div class="session-item">
+
+                        <div class="session-icon">⏱️</div>
+
+                        <div class="session-info">
+                            <strong>Focus Session</strong>
+                            <span>${dateText}</span>
+                        </div>
+
+                        <div class="session-minutes">
+                            ${Number(session.minutes || 0)} min
+                        </div>
+
+                    </div>
+                `;
+            }).join("");
+
+        } catch (error) {
+
+            console.error(error);
+
+            sessionList.innerHTML = `
+                <div class="empty-sessions">
+                    Could not load focus history.
+                </div>
+            `;
+        }
+    }
+
+    updateTimer();
+    loadSessions();
+</script>
+
+</body>
+</html>
+```

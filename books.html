@@ -1,0 +1,361 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyami | Digital Books</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .books-hero {
+            margin-bottom: 30px;
+        }
+
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .book-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+        }
+
+        .book-card::before {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            right: -90px;
+            top: -90px;
+            border-radius: 50%;
+            background: rgba(255,157,61,.09);
+            filter: blur(18px);
+        }
+
+        .book-cover {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -25px -25px 22px;
+            background:
+                radial-gradient(circle at 50% 40%,
+                    rgba(77,163,255,.25),
+                    transparent 55%),
+                linear-gradient(
+                    135deg,
+                    rgba(35,135,255,.18),
+                    rgba(255,157,61,.12)
+                );
+            border-bottom: 1px solid rgba(77,163,255,.15);
+            font-size: 4rem;
+        }
+
+        .book-card h3 {
+            position: relative;
+            z-index: 1;
+        }
+
+        .book-card p {
+            min-height: 55px;
+            margin-bottom: 18px;
+        }
+
+        .book-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .resource-link {
+            color: var(--blue2);
+            font-weight: 700;
+        }
+
+        .resource-link:hover {
+            color: var(--orange2);
+        }
+
+        .library-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .library-stat {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--panel);
+        }
+
+        .library-stat strong {
+            display: block;
+            color: var(--blue2);
+            font-size: 1.5rem;
+        }
+
+        .library-stat span {
+            color: var(--muted);
+            font-size: .85rem;
+        }
+
+        @media (max-width: 900px) {
+            .library-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .library-grid,
+            .library-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <a href="/dashboard.html" class="brand">
+        <span class="logo">G</span>
+        <span>Gyami<span style="color:var(--orange)">✦</span></span>
+    </a>
+
+    <nav>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/courses.html">Courses</a>
+        <a href="/books.html" class="active">Books</a>
+        <a href="/notes.html">Notes</a>
+        <a href="/focus.html">Focus</a>
+        <a href="/quiz.html">Quiz</a>
+        <a href="/ai.html">AI</a>
+        <a href="/progress.html">Progress</a>
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <section class="hero books-hero">
+
+        <div>
+            <div class="eyebrow">DIGITAL LEARNING LIBRARY</div>
+
+            <h1>Explore Your Resources 📖</h1>
+
+            <p>
+                Keep your learning resources, references and
+                study materials in one organized space.
+            </p>
+        </div>
+
+    </section>
+
+
+    <section class="library-info">
+
+        <div class="library-stat">
+            <strong>📚 5+</strong>
+            <span>Learning Resources</span>
+        </div>
+
+        <div class="library-stat">
+            <strong>🧠 Smart</strong>
+            <span>Student-focused content</span>
+        </div>
+
+        <div class="library-stat">
+            <strong>⚡ Quick</strong>
+            <span>Easy access while studying</span>
+        </div>
+
+    </section>
+
+
+    <section>
+
+        <div class="section-header">
+
+            <div>
+                <div class="eyebrow">RESOURCE HUB</div>
+                <h2>Digital Books & Materials</h2>
+                <p>
+                    Useful resources for your current learning journey.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="library-grid">
+
+            <article class="book-card">
+
+                <div class="book-cover">🐍</div>
+
+                <span class="badge">PROGRAMMING</span>
+
+                <h3>Python Basics</h3>
+
+                <p>
+                    A beginner-friendly resource covering
+                    Python fundamentals, variables, conditions,
+                    loops and functions.
+                </p>
+
+                <div class="book-footer">
+                    <span class="small muted">Beginner</span>
+                    <a href="/courses.html" class="resource-link">
+                        Study →
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="book-card">
+
+                <div class="book-cover">🌐</div>
+
+                <span class="badge">WEB TECHNOLOGY</span>
+
+                <h3>Web Development</h3>
+
+                <p>
+                    Explore HTML, CSS and JavaScript fundamentals
+                    for building modern web experiences.
+                </p>
+
+                <div class="book-footer">
+                    <span class="small muted">Beginner</span>
+                    <a href="/courses.html" class="resource-link">
+                        Study →
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="book-card">
+
+                <div class="book-cover">🗄️</div>
+
+                <span class="badge">DATABASE</span>
+
+                <h3>Database Essentials</h3>
+
+                <p>
+                    Learn about tables, queries, relationships
+                    and the fundamentals of SQLite databases.
+                </p>
+
+                <div class="book-footer">
+                    <span class="small muted">Beginner</span>
+                    <a href="/courses.html" class="resource-link">
+                        Study →
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="book-card">
+
+                <div class="book-cover">🤖</div>
+
+                <span class="badge">ARTIFICIAL INTELLIGENCE</span>
+
+                <h3>Artificial Intelligence</h3>
+
+                <p>
+                    Understand AI concepts, responsible use and
+                    practical everyday applications.
+                </p>
+
+                <div class="book-footer">
+                    <span class="small muted">Foundation</span>
+                    <a href="/courses.html" class="resource-link">
+                        Study →
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="book-card">
+
+                <div class="book-cover">🌱</div>
+
+                <span class="badge">INNOVATION</span>
+
+                <h3>Environmental Sustainability</h3>
+
+                <p>
+                    Discover technology ideas that support
+                    cleaner, smarter and more sustainable living.
+                </p>
+
+                <div class="book-footer">
+                    <span class="small muted">Innovation</span>
+                    <a href="/courses.html" class="resource-link">
+                        Study →
+                    </a>
+                </div>
+
+            </article>
+
+
+            <article class="book-card">
+
+                <div class="book-cover">🧠</div>
+
+                <span class="badge">STUDY SKILLS</span>
+
+                <h3>Smart Learning Guide</h3>
+
+                <p>
+                    Use Gyami's notes, focus sessions, quizzes
+                    and AI tools to organize your study routine.
+                </p>
+
+                <div class="book-footer">
+                    <span class="small muted">Study Tools</span>
+                    <a href="/dashboard.html" class="resource-link">
+                        Explore →
+                    </a>
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer style="
+    text-align:center;
+    padding:25px;
+    color:var(--muted);
+    border-top:1px solid rgba(91,151,255,.1);
+">
+    Gyami Smart Learning Platform
+    <span style="color:var(--orange)">✦</span>
+    Learn smarter, one step at a time.
+</footer>
+
+</body>
+</html>
+```

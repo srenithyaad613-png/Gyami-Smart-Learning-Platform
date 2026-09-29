@@ -1,0 +1,547 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes | Gyami Smart Learning</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .notes-hero {
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notes-hero::after {
+            content: "✦";
+            position: absolute;
+            right: 8%;
+            top: 15px;
+            font-size: 110px;
+            color: rgba(77, 163, 255, 0.07);
+            pointer-events: none;
+        }
+
+        .notes-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .notes-hero h1 {
+            margin-bottom: 10px;
+        }
+
+        .notes-hero p {
+            max-width: 700px;
+            color: var(--muted);
+        }
+
+        .notes-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 380px) 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .note-editor {
+            position: sticky;
+            top: 90px;
+        }
+
+        .note-editor h2,
+        .notes-list h2 {
+            margin-bottom: 6px;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .notes-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .notes-form textarea {
+            width: 100%;
+            min-height: 190px;
+            resize: vertical;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: rgba(5, 8, 22, 0.65);
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.6;
+            transition: 0.25s ease;
+        }
+
+        .notes-form textarea:focus,
+        .notes-form input:focus {
+            border-color: rgba(77, 163, 255, 0.65);
+            box-shadow: 0 0 22px rgba(77, 163, 255, 0.12);
+        }
+
+        .notes-form input {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(5, 8, 22, 0.65);
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .notes-form input::placeholder,
+        .notes-form textarea::placeholder {
+            color: #71809d;
+        }
+
+        .save-note {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-message {
+            min-height: 20px;
+            font-size: 13px;
+            color: var(--success);
+        }
+
+        .notes-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .notes-count {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .note-card {
+            position: relative;
+            min-height: 210px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .note-card::before {
+            content: "";
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            right: -70px;
+            top: -70px;
+            background: rgba(77, 163, 255, 0.09);
+            filter: blur(3px);
+        }
+
+        .note-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(
+                135deg,
+                rgba(77, 163, 255, 0.18),
+                rgba(255, 157, 61, 0.12)
+            );
+            border: 1px solid var(--border);
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(77, 163, 255, 0.08);
+        }
+
+        .delete-note {
+            border: 1px solid rgba(255, 107, 129, 0.2);
+            background: rgba(255, 107, 129, 0.06);
+            color: var(--danger);
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .delete-note:hover {
+            background: rgba(255, 107, 129, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .note-title {
+            margin-top: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-content {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .note-date {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(91, 151, 255, 0.12);
+            color: #72809c;
+            font-size: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .empty-notes {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 25px;
+        }
+
+        .empty-notes .empty-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .empty-notes p {
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        @media (max-width: 900px) {
+            .notes-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .note-editor {
+                position: static;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notes-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="container navin">
+        <a href="/dashboard.html" class="brand">
+            <span class="logo">G</span>
+            <span>Gyami</span>
+        </a>
+
+        <nav>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/courses.html">Courses</a>
+            <a href="/books.html">Books</a>
+            <a href="/notes.html" class="active">Notes</a>
+            <a href="/focus.html">Focus</a>
+            <a href="/quiz.html">Quiz</a>
+            <a href="/ai.html">AI</a>
+            <a href="/progress.html">Progress</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero notes-hero">
+        <div class="notes-hero-content">
+            <span class="badge">✦ PERSONAL KNOWLEDGE SPACE</span>
+            <h1>My Notes</h1>
+            <p>
+                Capture important concepts, quick ideas, formulas and study points
+                in one organized learning space.
+            </p>
+        </div>
+    </section>
+
+    <section class="notes-layout">
+
+        <!-- CREATE NOTE -->
+        <div class="card note-editor">
+            <h2>Create a Note</h2>
+            <p class="section-subtitle">
+                Save something useful for your next study session.
+            </p>
+
+            <form id="notesForm" class="notes-form">
+
+                <input
+                    type="text"
+                    id="noteTitle"
+                    placeholder="Note title"
+                    maxlength="100"
+                    required
+                >
+
+                <textarea
+                    id="noteContent"
+                    placeholder="Write your notes here..."
+                    required
+                ></textarea>
+
+                <button type="submit" class="primary-btn save-note">
+                    ✦ Save Note
+                </button>
+
+                <div id="formMessage" class="form-message"></div>
+
+            </form>
+        </div>
+
+        <!-- NOTES -->
+        <div class="notes-list">
+
+            <div class="notes-toolbar">
+                <div>
+                    <h2>Saved Notes</h2>
+                    <div class="notes-count" id="notesCount">
+                        Loading notes...
+                    </div>
+                </div>
+            </div>
+
+            <div id="notesGrid" class="notes-grid"></div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    const user = JSON.parse(localStorage.getItem("gyamiUser") || "null");
+
+    if (!user) {
+        window.location.href = "/index.html";
+    }
+
+    const notesGrid = document.getElementById("notesGrid");
+    const notesCount = document.getElementById("notesCount");
+    const notesForm = document.getElementById("notesForm");
+    const formMessage = document.getElementById("formMessage");
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+        if (!value) return "Recently added";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+
+        return date.toLocaleString([], {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    async function loadNotes() {
+        try {
+            const response = await fetch(`/api/notes/${user.id}`);
+            const data = await response.json();
+
+            const notes = Array.isArray(data)
+                ? data
+                : (data.notes || []);
+
+            notesCount.textContent =
+                `${notes.length} ${notes.length === 1 ? "note" : "notes"} saved`;
+
+            if (!notes.length) {
+                notesGrid.innerHTML = `
+                    <div class="card empty-notes">
+                        <div class="empty-icon">📝</div>
+                        <h3>Your study space is empty</h3>
+                        <p>Create your first note and start building your knowledge library.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            notesGrid.innerHTML = notes.map(note => `
+                <article class="card note-card">
+
+                    <div class="note-top">
+                        <div class="note-icon">📝</div>
+
+                        <button
+                            class="delete-note"
+                            onclick="deleteNote(${Number(note.id)})"
+                            title="Delete note"
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <div class="note-title">
+                        ${escapeHtml(note.title || "Untitled Note")}
+                    </div>
+
+                    <div class="note-content">
+                        ${escapeHtml(note.content || "")}
+                    </div>
+
+                    <div class="note-date">
+                        ${formatDate(note.created_at || note.created)}
+                    </div>
+
+                </article>
+            `).join("");
+
+        } catch (error) {
+            console.error(error);
+
+            notesGrid.innerHTML = `
+                <div class="card empty-notes">
+                    <div class="empty-icon">⚠️</div>
+                    <h3>Could not load notes</h3>
+                    <p>Make sure the Gyami server is running and try again.</p>
+                </div>
+            `;
+
+            notesCount.textContent = "Unable to load notes";
+        }
+    }
+
+    notesForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const title = document.getElementById("noteTitle").value.trim();
+        const content = document.getElementById("noteContent").value.trim();
+
+        if (!title || !content) {
+            formMessage.textContent = "Please enter both a title and note.";
+            formMessage.style.color = "var(--danger)";
+            return;
+        }
+
+        formMessage.textContent = "Saving...";
+        formMessage.style.color = "var(--muted)";
+
+        try {
+            const response = await fetch("/api/notes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    title: title,
+                    content: content
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.success === false) {
+                throw new Error(data.detail || data.message || "Could not save note");
+            }
+
+            notesForm.reset();
+
+            formMessage.textContent = "✓ Note saved successfully";
+            formMessage.style.color = "var(--success)";
+
+            await loadNotes();
+
+            setTimeout(() => {
+                formMessage.textContent = "";
+            }, 2500);
+
+        } catch (error) {
+            console.error(error);
+
+            formMessage.textContent =
+                "Could not save the note. Please try again.";
+
+            formMessage.style.color = "var(--danger)";
+        }
+    });
+
+    async function deleteNote(noteId) {
+        const confirmed = confirm("Delete this note?");
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/notes/${noteId}`, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                throw new Error("Delete failed");
+            }
+
+            await loadNotes();
+
+        } catch (error) {
+            console.error(error);
+            alert("Could not delete the note. Please try again.");
+        }
+    }
+
+    loadNotes();
+</script>
+
+</body>
+</html>
+```

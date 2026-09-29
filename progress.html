@@ -1,0 +1,955 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress | Gyami Smart Learning</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .progress-hero {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .progress-hero::after {
+            content: "↗";
+            position: absolute;
+            right: 7%;
+            top: -35px;
+            font-size: 190px;
+            font-weight: 800;
+            color: rgba(77, 163, 255, 0.05);
+            pointer-events: none;
+        }
+
+        .progress-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .overview-card {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .overview-card::after {
+            content: "";
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            right: -45px;
+            top: -45px;
+            background: rgba(77, 163, 255, 0.07);
+        }
+
+        .overview-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(77, 163, 255, 0.09);
+            border: 1px solid rgba(77, 163, 255, 0.15);
+            margin-bottom: 13px;
+        }
+
+        .overview-value {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .overview-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .progress-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .course-progress-card h2,
+        .activity-card h2 {
+            margin-bottom: 5px;
+        }
+
+        .course-progress-list {
+            display: grid;
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .progress-course {
+            padding: 17px;
+            border-radius: 15px;
+            border: 1px solid rgba(91, 151, 255, 0.13);
+            background: rgba(5, 8, 22, 0.42);
+        }
+
+        .progress-course-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 11px;
+        }
+
+        .course-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .course-mini-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(77, 163, 255, 0.08);
+            border: 1px solid rgba(77, 163, 255, 0.14);
+            flex-shrink: 0;
+        }
+
+        .course-name strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .course-name span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .percentage {
+            color: var(--orange2);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .progress-track {
+            height: 8px;
+            border-radius: 20px;
+            background: rgba(91, 151, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--blue), var(--orange));
+            box-shadow: 0 0 14px rgba(77, 163, 255, 0.2);
+            transition: width 0.5s ease;
+        }
+
+        .progress-bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 7px;
+            color: #71809d;
+            font-size: 11px;
+        }
+
+        .side-column {
+            display: grid;
+            gap: 20px;
+        }
+
+        .activity-list {
+            margin-top: 18px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(5, 8, 22, 0.4);
+            border: 1px solid rgba(91, 151, 255, 0.1);
+        }
+
+        .activity-icon {
+            width: 35px;
+            height: 35px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(77, 163, 255, 0.08);
+            flex-shrink: 0;
+        }
+
+        .activity-text {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .activity-text strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .activity-text span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .activity-empty {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .learning-summary {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(91, 151, 255, 0.1);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .summary-row strong {
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .progress-note {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 13px;
+            border: 1px solid rgba(255, 157, 61, 0.18);
+            background: rgba(255, 157, 61, 0.05);
+        }
+
+        .progress-note strong {
+            color: var(--orange2);
+            font-size: 13px;
+        }
+
+        .progress-note p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .loading {
+            color: var(--muted);
+            text-align: center;
+            padding: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .progress-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-course-top {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="container navin">
+
+        <a href="/dashboard.html" class="brand">
+            <span class="logo">G</span>
+            <span>Gyami</span>
+        </a>
+
+        <nav>
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/courses.html">Courses</a>
+            <a href="/books.html">Books</a>
+            <a href="/notes.html">Notes</a>
+            <a href="/focus.html">Focus</a>
+            <a href="/quiz.html">Quiz</a>
+            <a href="/ai.html">AI</a>
+            <a href="/progress.html" class="active">Progress</a>
+        </nav>
+
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero progress-hero">
+
+        <div class="progress-hero-content">
+
+            <span class="badge">✦ LEARNING ANALYTICS</span>
+
+            <h1>Your Progress</h1>
+
+            <p>
+                See your learning activity, course progress,
+                focus sessions and quiz performance in one place.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- OVERVIEW -->
+
+    <section class="overview-grid">
+
+        <div class="card overview-card">
+
+            <div class="overview-icon">📚</div>
+
+            <div id="coursesValue" class="overview-value">
+                0
+            </div>
+
+            <div class="overview-label">
+                Courses Started
+            </div>
+
+        </div>
+
+        <div class="card overview-card">
+
+            <div class="overview-icon">⏱️</div>
+
+            <div id="focusValue" class="overview-value">
+                0
+            </div>
+
+            <div class="overview-label">
+                Focus Minutes
+            </div>
+
+        </div>
+
+        <div class="card overview-card">
+
+            <div class="overview-icon">🎯</div>
+
+            <div id="quizValue" class="overview-value">
+                0%
+            </div>
+
+            <div class="overview-label">
+                Quiz Performance
+            </div>
+
+        </div>
+
+        <div class="card overview-card">
+
+            <div class="overview-icon">📝</div>
+
+            <div id="notesValue" class="overview-value">
+                0
+            </div>
+
+            <div class="overview-label">
+                Notes Created
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- MAIN CONTENT -->
+
+    <section class="progress-layout">
+
+        <!-- COURSE PROGRESS -->
+
+        <div class="card course-progress-card">
+
+            <h2>Course Progress</h2>
+
+            <p class="section-subtitle">
+                Track how far you have progressed through your learning paths.
+            </p>
+
+            <div id="courseProgressList" class="course-progress-list">
+                <div class="loading">
+                    Loading your progress...
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDE -->
+
+        <div class="side-column">
+
+            <div class="card activity-card">
+
+                <h2>Recent Activity</h2>
+
+                <p class="section-subtitle">
+                    Your latest learning actions.
+                </p>
+
+                <div id="activityList" class="activity-list">
+                    <div class="activity-empty">
+                        Loading activity...
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Learning Summary</h2>
+
+                <div class="learning-summary">
+
+                    <div class="summary-row">
+                        <span>Average Course Progress</span>
+                        <strong id="averageProgress">0%</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Focus Sessions</span>
+                        <strong id="focusSessions">0</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Quiz Attempts</span>
+                        <strong id="quizAttempts">0</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Notes</span>
+                        <strong id="summaryNotes">0</strong>
+                    </div>
+
+                </div>
+
+                <div class="progress-note">
+
+                    <strong>💡 Keep building momentum</strong>
+
+                    <p>
+                        Small learning sessions add up. Keep using
+                        Courses, Focus, Notes and Quiz regularly.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+    const user = JSON.parse(
+        localStorage.getItem("gyamiUser") || "null"
+    );
+
+    if (!user) {
+        window.location.href = "/index.html";
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function getPercentage(progress) {
+        const value = Number(
+            progress?.progress ??
+            progress?.percentage ??
+            progress?.percent ??
+            progress?.completed ??
+            0
+        );
+
+        return Math.max(0, Math.min(100, Math.round(value)));
+    }
+
+    function getCourseName(course) {
+        return (
+            course.course_name ||
+            course.name ||
+            course.title ||
+            "Course"
+        );
+    }
+
+    function getCourseIcon(name) {
+
+        const lower = name.toLowerCase();
+
+        if (lower.includes("python")) return "🐍";
+        if (lower.includes("web")) return "🌐";
+        if (lower.includes("database")) return "🗄️";
+        if (lower.includes("artificial")) return "🤖";
+        if (lower.includes("sustain")) return "🌱";
+
+        return "📘";
+    }
+
+    async function loadProgress() {
+
+        try {
+
+            const response = await fetch(
+                `/api/progress/${user.id}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Progress request failed");
+            }
+
+            const data = await response.json();
+
+            const progressList = Array.isArray(data)
+                ? data
+                : (
+                    data.progress ||
+                    data.courses ||
+                    data.data ||
+                    []
+                );
+
+            const courseList =
+                document.getElementById("courseProgressList");
+
+            if (!progressList.length) {
+
+                courseList.innerHTML = `
+                    <div class="loading">
+                        No course progress recorded yet.
+                    </div>
+                `;
+
+                document.getElementById("coursesValue")
+                    .textContent = "0";
+
+                document.getElementById("averageProgress")
+                    .textContent = "0%";
+
+                return;
+            }
+
+            document.getElementById("coursesValue")
+                .textContent = progressList.length;
+
+            let totalProgress = 0;
+
+            courseList.innerHTML =
+                progressList.map(course => {
+
+                    const name = getCourseName(course);
+                    const percentage = getPercentage(course);
+
+                    totalProgress += percentage;
+
+                    return `
+                        <div class="progress-course">
+
+                            <div class="progress-course-top">
+
+                                <div class="course-name">
+
+                                    <div class="course-mini-icon">
+                                        ${getCourseIcon(name)}
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            ${escapeHtml(name)}
+                                        </strong>
+
+                                        <span>
+                                            Learning progress
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="percentage">
+                                    ${percentage}%
+                                </div>
+
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div
+                                    class="progress-value"
+                                    style="width:${percentage}%"
+                                ></div>
+
+                            </div>
+
+                            <div class="progress-bottom">
+                                <span>Course completion</span>
+                                <span>${percentage}/100</span>
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("");
+
+            const average =
+                Math.round(totalProgress / progressList.length);
+
+            document.getElementById("averageProgress")
+                .textContent = `${average}%`;
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("courseProgressList")
+                .innerHTML = `
+                    <div class="loading">
+                        Could not load course progress.
+                    </div>
+                `;
+        }
+    }
+
+    async function loadFocus() {
+
+        try {
+
+            const response = await fetch(
+                `/api/focus/${user.id}`
+            );
+
+            const data = await response.json();
+
+            const sessions = Array.isArray(data)
+                ? data
+                : (data.sessions || []);
+
+            const totalMinutes =
+                sessions.reduce(
+                    (total, session) =>
+                        total + Number(session.minutes || 0),
+                    0
+                );
+
+            document.getElementById("focusValue")
+                .textContent = totalMinutes;
+
+            document.getElementById("focusSessions")
+                .textContent = sessions.length;
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("focusValue")
+                .textContent = "0";
+
+            document.getElementById("focusSessions")
+                .textContent = "0";
+        }
+    }
+
+    async function loadNotes() {
+
+        try {
+
+            const response = await fetch(
+                `/api/notes/${user.id}`
+            );
+
+            const data = await response.json();
+
+            const notes = Array.isArray(data)
+                ? data
+                : (data.notes || []);
+
+            document.getElementById("notesValue")
+                .textContent = notes.length;
+
+            document.getElementById("summaryNotes")
+                .textContent = notes.length;
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("notesValue")
+                .textContent = "0";
+
+            document.getElementById("summaryNotes")
+                .textContent = "0";
+        }
+    }
+
+    async function loadQuiz() {
+
+        try {
+
+            const response = await fetch(
+                `/api/tests/${user.id}`
+            );
+
+            const data = await response.json();
+
+            const results = Array.isArray(data)
+                ? data
+                : (
+                    data.results ||
+                    data.tests ||
+                    []
+                );
+
+            document.getElementById("quizAttempts")
+                .textContent = results.length;
+
+            if (!results.length) {
+
+                document.getElementById("quizValue")
+                    .textContent = "0%";
+
+                return;
+            }
+
+            let totalPercentage = 0;
+
+            results.forEach(result => {
+
+                let percentage;
+
+                if (result.percentage !== undefined) {
+
+                    percentage =
+                        Number(result.percentage);
+
+                } else if (
+                    result.total &&
+                    result.score !== undefined
+                ) {
+
+                    percentage =
+                        (
+                            Number(result.score) /
+                            Number(result.total)
+                        ) * 100;
+
+                } else {
+
+                    percentage =
+                        Number(result.score || 0);
+                }
+
+                totalPercentage += percentage;
+            });
+
+            const average =
+                Math.round(
+                    totalPercentage / results.length
+                );
+
+            document.getElementById("quizValue")
+                .textContent = `${average}%`;
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("quizValue")
+                .textContent = "0%";
+
+            document.getElementById("quizAttempts")
+                .textContent = "0";
+        }
+    }
+
+    async function loadActivity() {
+
+        const activityList =
+            document.getElementById("activityList");
+
+        try {
+
+            const response = await fetch(
+                `/api/activity/${user.id}`
+            );
+
+            const data = await response.json();
+
+            const activities = Array.isArray(data)
+                ? data
+                : (
+                    data.activities ||
+                    data.activity ||
+                    []
+                );
+
+            if (!activities.length) {
+
+                activityList.innerHTML = `
+                    <div class="activity-empty">
+                        No recent activity yet.
+                    </div>
+                `;
+
+                return;
+            }
+
+            activityList.innerHTML =
+                activities.slice(0, 6).map(activity => {
+
+                    const type =
+                        String(
+                            activity.type ||
+                            activity.action ||
+                            activity.activity ||
+                            "Learning"
+                        ).toLowerCase();
+
+                    let icon = "✨";
+
+                    if (type.includes("note")) icon = "📝";
+                    else if (type.includes("focus")) icon = "⏱️";
+                    else if (type.includes("quiz")) icon = "🎯";
+                    else if (type.includes("course")) icon = "📚";
+                    else if (type.includes("login")) icon = "👋";
+                    else if (type.includes("ai")) icon = "🤖";
+
+                    const title =
+                        activity.title ||
+                        activity.message ||
+                        activity.action ||
+                        "Learning activity";
+
+                    const date =
+                        activity.created_at ||
+                        activity.created ||
+                        "";
+
+                    let dateText = "Recently";
+
+                    if (date) {
+
+                        const parsed =
+                            new Date(date);
+
+                        if (!Number.isNaN(parsed.getTime())) {
+
+                            dateText =
+                                parsed.toLocaleDateString([], {
+                                    day: "numeric",
+                                    month: "short"
+                                });
+                        }
+                    }
+
+                    return `
+                        <div class="activity-item">
+
+                            <div class="activity-icon">
+                                ${icon}
+                            </div>
+
+                            <div class="activity-text">
+
+                                <strong>
+                                    ${escapeHtml(title)}
+                                </strong>
+
+                                <span>
+                                    ${dateText}
+                                </span>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("");
+
+        } catch (error) {
+
+            console.error(error);
+
+            activityList.innerHTML = `
+                <div class="activity-empty">
+                    No recent activity available.
+                </div>
+            `;
+        }
+    }
+
+    async function loadEverything() {
+
+        await Promise.all([
+            loadProgress(),
+            loadFocus(),
+            loadNotes(),
+            loadQuiz(),
+            loadActivity()
+        ]);
+    }
+
+    loadEverything();
+</script>
+
+</body>
+</html>
+```
